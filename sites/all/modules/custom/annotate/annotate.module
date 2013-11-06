@@ -22,5 +22,38 @@ function annotate_menu() {
     'file'              => 'annotate.admin.inc'
   );
 
-  return $items;;
+  return $items;
+}
+
+/**
+  * Implementation of hook_nodeapi().
+  */
+function annotate_nodeapi(&$node, $op, $teaser, $page) {
+  global $user;
+
+  switch($op) {
+    // The view operation means the node is about to be displayed
+    case 'view':
+      // Abort if the user is anonymous or
+      // if the node is not being displayed on the page by itself
+      // ie: it could be in a node listing or search result
+      if($user->uid == 0 || !$page) {
+        break;
+      }
+
+      // Find out which node types we should annotate.
+      $types_to_annotate = variable_get('annotate_nodetypes', array('page'));
+
+      // Abort if this node is not one of the types we should annotate
+      if(!in_array($node->type, $types_to_annotate)) {
+        break;
+      }
+
+      // Add form as a content item
+      $node->content['annotation_form'] = array(
+        '#value' => drupal_get_form('annotate_entry_form', $node),
+        '#weight' => 10
+      );
+      break;
+  }
 }
