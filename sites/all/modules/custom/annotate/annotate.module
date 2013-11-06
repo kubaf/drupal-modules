@@ -1,0 +1,9 @@
+<?
+// $Id$
+/**
+  * @file
+  * Lets user add private annotations to nodes
+  *
+  * Adds a text field when a node is displayed
+  * so that authenticated users may make notes.
+*/ 
